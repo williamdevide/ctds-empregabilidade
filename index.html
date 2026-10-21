@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infográficos Executivos: Stacks & Salários das 12 Principais Empresas de TI no Brasil</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Devicon CDN para logotipos oficiais das tecnologias -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons para ícones de UI e metodologias -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#131c2e',
+                            900: '#0b1120',
+                            950: '#060913',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #060913;
+            color: #f8fafc;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(88, 28, 135, 0.15) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(6, 78, 59, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        .tech-badge {
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tech-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        .tech-badge.highlighted {
+            ring: 2px solid #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+            transform: scale(1.06);
+            z-index: 10;
+        }
+        .tech-badge.dimmed {
+            opacity: 0.22;
+            filter: grayscale(80%);
+        }
+
+        .matrix-cell {
+            transition: background-color 0.2s ease;
+        }
+        .matrix-row:hover .matrix-cell {
+            background-color: rgba(30, 41, 59, 0.45);
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #060913 !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-cyan-500 selection:text-slate-950 pb-16">
+
+    <!-- HEADER EXECUTIVO -->
+    <header class="border-b border-slate-800/80 bg-slate-900/75 backdrop-blur-xl sticky top-0 z-40">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <!-- Título e Subtítulo -->
+                <div class="flex items-start sm:items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0 border border-white/10">
+                        <i class="ph-bold ph-Exclude text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-400 rounded-md border border-cyan-500/30">Dados 100% Verificados</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-purple-500/15 text-purple-300 rounded-md border border-purple-500/30">12 Empresas × 6 Carreiras × 5 Níveis</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white mt-0.5">
+                            Infográficos Executivos: <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">Fábricas de Software, Produto & Salários TI</span>
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Seletor de Modo de Visualização (Abas ou Ambos) -->
+                <div class="flex flex-wrap items-center gap-2 bg-slate-950/90 p-1.5 rounded-xl border border-slate-800 no-print">
+                    <button onclick="switchView('stacks')" id="tab-stacks" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md">
+                        <i class="ph-bold ph-stack text-base"></i>
+                        <span>1. Matriz de Stacks (Logos)</span>
+                    </button>
+                    <button onclick="switchView('salaries')" id="tab-salaries" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/60">
+                        <i class="ph-bold ph-currency-circle-dollar text-base"></i>
+                        <span>2. Matriz Salarial (Senioridade)</span>
+                    </button>
+                    <button onclick="switchView('both')" id="tab-both" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/60">
+                        <i class="ph-bold ph-rows text-base"></i>
+                        <span>Ver Ambos Juntos</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-12">
+
+        <!-- ========================================================================= -->
+        <!-- SEÇÃO 1: INFOGRÁFICO 1 - MATRIZ DE STACKS (EMPRESA X VAGA COM LOGOTIPOS) -->
+        <!-- ========================================================================= -->
+        <section id="section-stacks" class="space-y-5">
+            <!-- Barra de Controles do Infográfico 1 -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-2xl">
+                <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                            <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">
+                                INFOGRÁFICO 1: MATRIZ DE STACKS POR EMPRESA E VAGA
+                            </h2>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                            Mapeamento individualizado das 12 principais empresas (Fábricas Nacionais, Produto SaaS e Nearshore Global) com os logotipos oficiais de cada tecnologia solicitada.
+                        </p>
+                    </div>
+
+                    <!-- Busca e Filtros Rápidos -->
+                    <div class="flex flex-wrap items-center gap-3 no-print">
+                        <!-- Busca por Tecnologia -->
+                        <div class="relative flex-1 sm:w-64">
+                            <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="stack-search" oninput="filterStacks()" placeholder="Destacar stack (ex: Java, Cypress, AWS)..." 
+                                class="w-full pl-9 pr-8 py-2 bg-slate-950 border border-slate-700/80 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500">
+                            <button onclick="clearStackSearch()" id="clear-search-btn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+                                <i class="ph-bold ph-x-circle"></i>
+                            </button>
+                        </div>
+
+                        <!-- Filtro por Segmento de Empresa -->
+                        <select id="company-segment-filter" onchange="renderStackMatrix()" class="bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-500">
+                            <option value="all">Todas as 12 Empresas</option>
+                            <option value="finance">Foco Bancos & Finanças (Zup, GFT, BRQ, Stefanini)</option>
+                            <option value="global">Foco Global / Cloud / IA (CI&T, Compass, BairesDev)</option>
+                            <option value="agile">Fábricas Ágeis & Boutiques (DB1, Objective, Luby)</option>
+                            <option value="product">Produto Próprio / ERP / Gov (Softplan, Bluesoft)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pílulas de Destaque Rápido (Quick Highlight) -->
+                <div class="pt-3.5 flex items-center gap-2 flex-wrap no-print">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1">
+                        <i class="ph-fill ph-sparkle text-cyan-400"></i> Clique para destacar na matriz:
+                    </span>
+                    <button onclick="quickHighlight('Java')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-orange-300 border border-orange-500/20 transition">☕ Java</button>
+                    <button onclick="quickHighlight('.NET')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-purple-300 border border-purple-500/20 transition">🟣 .NET / C#</button>
+                    <button onclick="quickHighlight('React')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-cyan-300 border border-cyan-500/20 transition">⚛️ React</button>
+                    <button onclick="quickHighlight('Angular')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-red-300 border border-red-500/20 transition">🅰️ Angular</button>
+                    <button onclick="quickHighlight('Node.js')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-emerald-300 border border-emerald-500/20 transition">🟢 Node.js</button>
+                    <button onclick="quickHighlight('Python')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-yellow-300 border border-yellow-500/20 transition">🐍 Python</button>
+                    <button onclick="quickHighlight('Cypress')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-teal-300 border border-teal-500/20 transition">🌲 Cypress</button>
+                    <button onclick="quickHighlight('Playwright')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-amber-300 border border-amber-500/20 transition">🎭 Playwright</button>
+                    <button onclick="quickHighlight('Databricks')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-rose-300 border border-rose-500/20 transition">🧱 Databricks</button>
+                    <button onclick="quickHighlight('Power BI')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-yellow-200 border border-yellow-500/20 transition">📊 Power BI</button>
+                    <button onclick="clearStackSearch()" id="reset-highlight-pill" class="hidden px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 transition">✕ Limpar Destaque</button>
+                </div>
+            </div>
+
+            <!-- TABELA MATRIZ DE STACKS (12 EMPRESAS X 6 VAGAS) -->
+            <div class="bg-slate-900/95 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[1280px]">
+                        <thead>
+                            <tr class="bg-slate-950/90 border-b border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-300">
+                                <th class="py-4 px-4 w-[190px] sticky left-0 z-20 bg-slate-950 border-r border-slate-800">
+                                    <div class="flex items-center gap-2">
+                                        <i class="ph-bold ph-buildings text-cyan-400 text-base"></i>
+                                        <span>Empresa / Perfil</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-3.5 w-[185px] border-r border-slate-800/70 bg-cyan-950/20">
+                                    <div class="flex items-center gap-2 text-cyan-300">
+                                        <i class="ph-bold ph-Monitor text-base"></i>
+                                        <span>Dev Frontend</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-3.5 w-[195px] border-r border-slate-800/70 bg-indigo-950/20">
+                                    <div class="flex items-center gap-2 text-indigo-300">
+                                        <i class="ph-bold ph-hard-drives text-base"></i>
+                                        <span>Dev Backend</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-3.5 w-[195px] border-r border-slate-800/70 bg-purple-950/20">
+                                    <div class="flex items-center gap-2 text-purple-300">
+                                        <i class="ph-bold ph-code-block text-base"></i>
+                                        <span>Dev Fullstack</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-3.5 w-[195px] border-r border-slate-800/70 bg-amber-950/15">
+                                    <div class="flex items-center gap-2 text-amber-300">
+                                        <i class="ph-bold ph-kanban text-base"></i>
+                                        <span>Requisitos (BA/PO)</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-3.5 w-[195px] border-r border-slate-800/70 bg-emerald-950/15">
+                                    <div class="flex items-center gap-2 text-emerald-300">
+                                        <i class="ph-bold ph-chart-polar text-base"></i>
+                                        <span>Dados (BI / Analytics)</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-3.5 w-[195px] bg-rose-950/15">
+                                    <div class="flex items-center gap-2 text-rose-300">
+                                        <i class="ph-bold ph-shield-check text-base"></i>
+                                        <span>QA / Testes</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="stack-matrix-body" class="divide-y divide-slate-800/80 text-xs">
+                            <!-- Preenchido dinamicamente via JS com os logotipos reais -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- SEÇÃO 2: INFOGRÁFICO 2 - MATRIZ SALARIAL MÉDIA POR SENIORIDADE & EMPRESA -->
+        <!-- ========================================================================= -->
+        <section id="section-salaries" class="space-y-8">
+            
+            <!-- Cabeçalho e Simulador de Regime do Infográfico 2 -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-2xl">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">
+                                INFOGRÁFICO 2: MATRIZ SALARIAL DE TI POR SENIORIDADE (VALORES DISTINTOS REAIS)
+                            </h2>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                            Valores mensais brutos diferenciados para cada carreira (Trainee a Tech Lead) e comparativo direto entre as 12 empresas.
+                        </p>
+                    </div>
+
+                    <!-- Seletor de Regime de Contratação para Simulação na Matriz 2A -->
+                    <div class="flex flex-wrap items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800 no-print">
+                        <span class="text-[11px] font-semibold text-slate-400 px-2">Modalidade (Tabela 2A):</span>
+                        <button onclick="setContractMode('clt')" id="mode-clt" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-600 text-white shadow">
+                            🇧🇷 CLT Padrão (1.0x)
+                        </button>
+                        <button onclick="setContractMode('nearshore')" id="mode-nearshore" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white">
+                            🌎 CLT Nearshore Inglês (+30%)
+                        </button>
+                        <button onclick="setContractMode('pj')" id="mode-pj" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white">
+                            🏢 Contrato PJ (+40%)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PARTE 2A: MATRIZ CARREIRA X SENIORIDADE (6 CARREIRAS X 5 SENIORIDADES) -->
+            <div class="bg-slate-900/95 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                <div class="px-5 py-4 bg-slate-950/80 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <i class="ph-fill ph-table text-emerald-400 text-lg"></i>
+                        <h3 class="text-sm sm:text-base font-bold text-white">
+                            PARTE A — Matriz Salarial por Carreira × Nível de Senioridade
+                        </h3>
+                        <span id="contract-badge-label" class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            Regime CLT Mensal Bruto (R$)
+                        </span>
+                    </div>
+                    <span class="text-xs text-slate-400">Cada célula exibe a <strong>Faixa (Mín – Máx)</strong> e a <strong>Média Exata</strong> da carreira</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[1050px]">
+                        <thead>
+                            <tr class="bg-slate-950/60 border-b border-slate-800 text-[11px] font-bold uppercase tracking-wider">
+                                <th class="py-4 px-5 w-[230px] text-slate-300 border-r border-slate-800">Carreira / Especialidade</th>
+                                <th class="py-4 px-4 text-cyan-300 border-r border-slate-800/70 bg-cyan-950/10">
+                                    <div class="flex items-center justify-between">
+                                        <span>1. Trainee</span>
+                                        <span class="text-[10px] font-normal text-cyan-400/80">0–1 ano</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-4 text-blue-300 border-r border-slate-800/70 bg-blue-950/10">
+                                    <div class="flex items-center justify-between">
+                                        <span>2. Júnior</span>
+                                        <span class="text-[10px] font-normal text-blue-400/80">1–2 anos</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-4 text-purple-300 border-r border-slate-800/70 bg-purple-950/10">
+                                    <div class="flex items-center justify-between">
+                                        <span>3. Pleno</span>
+                                        <span class="text-[10px] font-normal text-purple-400/80">2–5 anos</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-4 text-pink-300 border-r border-slate-800/70 bg-pink-950/10">
+                                    <div class="flex items-center justify-between">
+                                        <span>4. Sênior</span>
+                                        <span class="text-[10px] font-normal text-pink-400/80">5+ anos</span>
+                                    </div>
+                                </th>
+                                <th class="py-4 px-4 text-amber-300 bg-amber-950/10">
+                                    <div class="flex items-center justify-between">
+                                        <span>5. Tech Lead / GPM</span>
+                                        <span class="text-[10px] font-normal text-amber-400/80">Liderança Técnica</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="career-salary-body" class="divide-y divide-slate-800/80 text-xs">
+                            <!-- Preenchido via JS com valores 100% distintos por carreira -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PARTE 2B: MATRIZ EMPRESA X SENIORIDADE (12 EMPRESAS X 5 NÍVEIS) -->
+            <div class="bg-slate-900/95 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                <div class="px-5 py-4 bg-slate-950/80 border-b border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2.5">
+                            <i class="ph-fill ph-buildings text-amber-400 text-lg"></i>
+                            <h3 class="text-sm sm:text-base font-bold text-white">
+                                PARTE B — Matriz Salarial por Empresa × Senioridade (Comparativo das 12 Empresas)
+                            </h3>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">
+                            Selecione a carreira ao lado para inspecionar a faixa salarial praticada especificamente em cada uma das 12 empresas.
+                        </p>
+                    </div>
+
+                    <!-- Filtro de Carreira para recalcular a Matriz de Empresas -->
+                    <div class="flex items-center gap-2 flex-wrap no-print">
+                        <span class="text-xs font-semibold text-slate-300">Carreira selecionada:</span>
+                        <select id="company-salary-role-select" onchange="renderCompanySalaryMatrix()" class="bg-slate-900 border border-amber-500/40 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-bold text-amber-300 focus:outline-none focus:border-amber-400 shadow-inner">
+                            <option value="fullstack">💻 Dev Fullstack (Referência Geral)</option>
+                            <option value="backend">⚙️ Dev Backend</option>
+                            <option value="frontend">🎨 Dev Frontend</option>
+                            <option value="data">📊 Analista de Dados (BI / Analytics)</option>
+                            <option value="qa">🛡️ Analista de Qualidade (QA Automação)</option>
+                            <option value="reqs">📋 Analista de Requisitos (BA / PO)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[1150px]">
+                        <thead>
+                            <tr class="bg-slate-950/60 border-b border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-300">
+                                <th class="py-3.5 px-4 w-[210px] border-r border-slate-800">Empresa</th>
+                                <th class="py-3.5 px-4 w-[190px] border-r border-slate-800">Modelo de Contratação & Bônus</th>
+                                <th class="py-3.5 px-4 text-cyan-300 border-r border-slate-800/70">Trainee</th>
+                                <th class="py-3.5 px-4 text-blue-300 border-r border-slate-800/70">Júnior</th>
+                                <th class="py-3.5 px-4 text-purple-300 border-r border-slate-800/70">Pleno</th>
+                                <th class="py-3.5 px-4 text-pink-300 border-r border-slate-800/70">Sênior</th>
+                                <th class="py-3.5 px-4 text-amber-300">Tech Lead / Líder</th>
+                            </tr>
+                        </thead>
+                        <tbody id="company-salary-body" class="divide-y divide-slate-800/80 text-xs">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- SCRIPT DE DADOS E RENDERIZAÇÃO -->
+    <script>
+        // =========================================================================
+        // 1. DICIONÁRIO DE LOGOTIPOS OFICIAIS (DEVICON + ÍCONES CUSTOMIZADOS)
+        // =========================================================================
+        const TECH_LOGOS = {
+            // Frontend & Mobile
+            "React": { icon: "devicon-react-original colored", bg: "bg-cyan-950/50 border-cyan-500/30 text-cyan-200" },
+            "Angular": { icon: "devicon-angular-plain colored", bg: "bg-red-950/50 border-red-500/30 text-red-200" },
+            "TypeScript": { icon: "devicon-typescript-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "Next.js": { icon: "devicon-nextjs-plain", bg: "bg-slate-800 border-slate-600 text-white" },
+            "Vue.js": { icon: "devicon-vuejs-plain colored", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Flutter": { icon: "devicon-flutter-plain colored", bg: "bg-sky-950/50 border-sky-500/30 text-sky-200" },
+            "React Native": { icon: "devicon-react-original colored", bg: "bg-indigo-950/50 border-indigo-500/30 text-indigo-200" },
+            "Ionic": { icon: "devicon-ionic-original colored", bg: "bg-blue-950/50 border-blue-400/30 text-blue-200" },
+            "Kotlin": { icon: "devicon-kotlin-plain colored", bg: "bg-purple-950/50 border-purple-500/30 text-purple-200" },
+            "Swift": { icon: "devicon-swift-plain colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "SASS": { icon: "devicon-sass-original colored", bg: "bg-pink-950/50 border-pink-500/30 text-pink-200" },
+            "HTML5/CSS3": { icon: "devicon-html5-plain colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Material UI": { icon: "devicon-materialui-plain colored", bg: "bg-sky-950/50 border-sky-500/30 text-sky-200" },
+            "Design System": { ph: "ph-fill ph-palette text-pink-400", bg: "bg-pink-950/40 border-pink-500/30 text-pink-200" },
+
+            // Backend
+            "Java (Spring)": { icon: "devicon-java-plain colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Java (Spring Boot)": { icon: "devicon-spring-original colored", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Java (JEE/Spring)": { icon: "devicon-java-plain colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Java (Spring/Quarkus)": { icon: "devicon-quarkus-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "Java (8 a 21)": { icon: "devicon-java-plain colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Java": { icon: "devicon-java-plain colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Spring Boot": { icon: "devicon-spring-original colored", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Hibernate/JPA": { icon: "devicon-hibernate-plain colored", bg: "bg-amber-950/50 border-amber-500/30 text-amber-200" },
+            ".NET Core": { icon: "devicon-dotnetcore-plain colored", bg: "bg-purple-950/50 border-purple-500/30 text-purple-200" },
+            ".NET (C#)": { icon: "devicon-csharp-plain colored", bg: "bg-purple-950/50 border-purple-500/30 text-purple-200" },
+            ".NET": { icon: "devicon-dotnetcore-plain colored", bg: "bg-purple-950/50 border-purple-500/30 text-purple-200" },
+            "Node.js": { icon: "devicon-nodejs-plain colored", bg: "bg-green-950/50 border-green-500/30 text-green-200" },
+            "Node.js (NestJS)": { icon: "devicon-nestjs-original colored", bg: "bg-rose-950/50 border-rose-500/30 text-rose-200" },
+            "Python": { icon: "devicon-python-plain colored", bg: "bg-yellow-950/50 border-yellow-500/30 text-yellow-200" },
+            "Python (FastAPI)": { icon: "devicon-fastapi-plain colored", bg: "bg-teal-950/50 border-teal-500/30 text-teal-200" },
+            "Python (Django/FastAPI)": { icon: "devicon-django-plain", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Go": { icon: "devicon-go-original-wordmark colored", bg: "bg-cyan-950/50 border-cyan-500/30 text-cyan-200" },
+            "PHP": { icon: "devicon-php-plain colored", bg: "bg-indigo-950/50 border-indigo-500/30 text-indigo-200" },
+            "PHP (Laravel)": { icon: "devicon-laravel-original colored", bg: "bg-red-950/50 border-red-500/30 text-red-200" },
+            "Cobol": { ph: "ph-bold ph-terminal-window text-amber-400", bg: "bg-amber-950/50 border-amber-500/30 text-amber-200" },
+            "Delphi": { ph: "ph-bold ph-cpu text-red-400", bg: "bg-red-950/50 border-red-500/30 text-red-200" },
+            "Kafka": { icon: "devicon-apachekafka-original", bg: "bg-slate-800 border-slate-600 text-slate-200" },
+            "RabbitMQ": { icon: "devicon-rabbitmq-original colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+
+            // Cloud & Fullstack Combos
+            "Java + Angular": { icon: "devicon-java-plain colored", icon2: "devicon-angular-plain colored", bg: "bg-slate-800/90 border-orange-500/30 text-slate-100" },
+            "Java + React": { icon: "devicon-java-plain colored", icon2: "devicon-react-original colored", bg: "bg-slate-800/90 border-cyan-500/30 text-slate-100" },
+            "Java + React/Angular": { icon: "devicon-java-plain colored", icon2: "devicon-react-original colored", bg: "bg-slate-800/90 border-orange-500/30 text-slate-100" },
+            ".NET + React": { icon: "devicon-dotnetcore-plain colored", icon2: "devicon-react-original colored", bg: "bg-slate-800/90 border-purple-500/30 text-slate-100" },
+            ".NET + Angular": { icon: "devicon-dotnetcore-plain colored", icon2: "devicon-angular-plain colored", bg: "bg-slate-800/90 border-purple-500/30 text-slate-100" },
+            ".NET + React/Angular": { icon: "devicon-dotnetcore-plain colored", icon2: "devicon-react-original colored", bg: "bg-slate-800/90 border-purple-500/30 text-slate-100" },
+            "Kotlin + Angular": { icon: "devicon-kotlin-plain colored", icon2: "devicon-angular-plain colored", bg: "bg-slate-800/90 border-purple-500/30 text-slate-100" },
+            "Node.js + React": { icon: "devicon-nodejs-plain colored", icon2: "devicon-react-original colored", bg: "bg-slate-800/90 border-emerald-500/30 text-slate-100" },
+            "Node.js + Next.js": { icon: "devicon-nodejs-plain colored", icon2: "devicon-nextjs-plain", bg: "bg-slate-800/90 border-emerald-500/30 text-slate-100" },
+            "Python + React": { icon: "devicon-python-plain colored", icon2: "devicon-react-original colored", bg: "bg-slate-800/90 border-yellow-500/30 text-slate-100" },
+            "AWS / GCP": { icon: "devicon-amazonwebservices-plain-wordmark colored", icon2: "devicon-googlecloud-plain colored", bg: "bg-amber-950/40 border-amber-500/30 text-amber-200" },
+            "AWS": { icon: "devicon-amazonwebservices-plain-wordmark colored", bg: "bg-amber-950/50 border-amber-500/30 text-amber-200" },
+            "AWS Serverless": { icon: "devicon-amazonwebservices-plain-wordmark colored", bg: "bg-amber-950/50 border-amber-500/30 text-amber-200" },
+            "AWS / Azure / GCP": { icon: "devicon-amazonwebservices-plain-wordmark colored", icon2: "devicon-azure-plain colored", bg: "bg-sky-950/40 border-sky-500/30 text-sky-200" },
+            "Kubernetes": { icon: "devicon-kubernetes-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "TDD / Clean Code": { ph: "ph-bold ph-check-square-offset text-emerald-400", bg: "bg-emerald-950/40 border-emerald-500/30 text-emerald-200" },
+
+            // Requisitos (BA / PO)
+            "Jira": { icon: "devicon-jira-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "Confluence": { icon: "devicon-confluence-plain colored", bg: "bg-sky-950/50 border-sky-500/30 text-sky-200" },
+            "Azure DevOps": { icon: "devicon-azuredevops-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "Figma": { icon: "devicon-figma-plain colored", bg: "bg-pink-950/50 border-pink-500/30 text-pink-200" },
+            "OpenAPI (Swagger)": { icon: "devicon-swagger-plain colored", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "BDD / Gherkin": { icon: "devicon-cucumber-plain colored", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Scrum": { ph: "ph-bold ph-arrows-clockwise text-cyan-400", bg: "bg-cyan-950/40 border-cyan-500/30 text-cyan-200" },
+            "SAFe": { ph: "ph-bold ph-tree-structure text-indigo-400", bg: "bg-indigo-950/40 border-indigo-500/30 text-indigo-200" },
+            "GenAI Flow": { ph: "ph-fill ph-sparkle text-purple-400", bg: "bg-purple-950/60 border-purple-400/40 text-purple-200" },
+            "BPMN (Bizagi)": { ph: "ph-bold ph-flow-arrow text-amber-400", bg: "bg-amber-950/40 border-amber-500/30 text-amber-200" },
+            "BPMN": { ph: "ph-bold ph-flow-arrow text-amber-400", bg: "bg-amber-950/40 border-amber-500/30 text-amber-200" },
+            "UML": { ph: "ph-bold ph-graph text-slate-300", bg: "bg-slate-800 border-slate-600 text-slate-200" },
+            "APF (Pontos Função)": { ph: "ph-bold ph-calculator text-teal-400", bg: "bg-teal-950/40 border-teal-500/30 text-teal-200" },
+            "Event Storming": { ph: "ph-fill ph-lightning text-orange-400", bg: "bg-orange-950/40 border-orange-500/30 text-orange-200" },
+            "DDD": { ph: "ph-bold ph-cube-transparent text-purple-400", bg: "bg-purple-950/40 border-purple-500/30 text-purple-200" },
+            "Product Discovery": { ph: "ph-bold ph-compass text-cyan-400", bg: "bg-cyan-950/40 border-cyan-500/30 text-cyan-200" },
+            "Jornada E-commerce": { ph: "ph-bold ph-shopping-cart text-emerald-400", bg: "bg-emerald-950/40 border-emerald-500/30 text-emerald-200" },
+            "Regras Legais/Gov": { ph: "ph-bold ph-scales text-amber-400", bg: "bg-amber-950/40 border-amber-500/30 text-amber-200" },
+            "Lean Inception": { ph: "ph-bold ph-rocket-launch text-rose-400", bg: "bg-rose-950/40 border-rose-500/30 text-rose-200" },
+            "Story Mapping": { ph: "ph-bold ph-map-trifold text-sky-400", bg: "bg-sky-950/40 border-sky-500/30 text-sky-200" },
+            "Domain Storytelling": { ph: "ph-bold ph-chats-circle text-indigo-400", bg: "bg-indigo-950/40 border-indigo-500/30 text-indigo-200" },
+            "Open Finance / PIX": { ph: "ph-bold ph-bank text-emerald-400", bg: "bg-emerald-950/40 border-emerald-500/30 text-emerald-200" },
+            "Backlog / Whimsical": { ph: "ph-bold ph-list-checks text-purple-400", bg: "bg-purple-950/40 border-purple-500/30 text-purple-200" },
+            "Fiscal (NF-e/SPED)": { ph: "ph-bold ph-receipt text-amber-400", bg: "bg-amber-950/50 border-amber-500/40 text-amber-200" },
+            "ERP Varejo": { ph: "ph-bold ph-storefront text-blue-400", bg: "bg-blue-950/40 border-blue-500/30 text-blue-200" },
+            "100% Inglês Fluente": { ph: "ph-bold ph-globe-hemisphere-west text-rose-400", bg: "bg-rose-950/60 border-rose-500/40 text-rose-200" },
+
+            // Dados (BI / Analytics)
+            "Python (PySpark)": { icon: "devicon-apachespark-original colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "PySpark": { icon: "devicon-apachespark-original colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Databricks": { ph: "ph-fill ph-stack-simple text-rose-500", bg: "bg-rose-950/50 border-rose-500/30 text-rose-200" },
+            "Snowflake": { ph: "ph-bold ph-snowflake text-sky-400", bg: "bg-sky-950/50 border-sky-500/30 text-sky-200" },
+            "BigQuery": { icon: "devicon-googlecloud-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "SQL": { icon: "devicon-azuresqldatabase-plain colored", bg: "bg-cyan-950/50 border-cyan-500/30 text-cyan-200" },
+            "SQL Server": { icon: "devicon-microsoftsqlserver-plain colored", bg: "bg-red-950/50 border-red-500/30 text-red-200" },
+            "Oracle PL/SQL": { icon: "devicon-oracle-original colored", bg: "bg-red-950/50 border-red-500/30 text-red-200" },
+            "Oracle": { icon: "devicon-oracle-original colored", bg: "bg-red-950/50 border-red-500/30 text-red-200" },
+            "PostgreSQL": { icon: "devicon-postgresql-plain colored", bg: "bg-sky-950/50 border-sky-500/30 text-sky-200" },
+            "MySQL": { icon: "devicon-mysql-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "MongoDB": { icon: "devicon-mongodb-plain colored", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Power BI": { ph: "ph-fill ph-chart-bar text-yellow-400", bg: "bg-yellow-950/50 border-yellow-500/30 text-yellow-200" },
+            "Tableau": { ph: "ph-bold ph-chart-pie-slice text-orange-400", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Looker": { icon: "devicon-googlecloud-plain colored", bg: "bg-indigo-950/50 border-indigo-500/30 text-indigo-200" },
+            "Metabase": { ph: "ph-fill ph-chart-donut text-sky-400", bg: "bg-sky-950/50 border-sky-500/30 text-sky-200" },
+            "Qlik": { ph: "ph-bold ph-chart-line-up text-emerald-400", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Quicksight": { icon: "devicon-amazonwebservices-plain-wordmark colored", bg: "bg-amber-950/50 border-amber-500/30 text-amber-200" },
+            "AWS Glue/Redshift": { icon: "devicon-amazonwebservices-plain-wordmark colored", bg: "bg-amber-950/50 border-amber-500/30 text-amber-200" },
+            "Azure Data Factory": { icon: "devicon-azure-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "Azure Synapse": { icon: "devicon-azure-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "Apache Airflow": { icon: "devicon-apacheairflow-plain colored", bg: "bg-teal-950/50 border-teal-500/30 text-teal-200" },
+            "dbt": { ph: "ph-bold ph-gear-six text-orange-400", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "SAS": { ph: "ph-bold ph-shield-star text-blue-400", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "Data Mesh": { ph: "ph-bold ph-share-network text-purple-400", bg: "bg-purple-950/50 border-purple-500/30 text-purple-200" },
+            "Data Warehouse": { ph: "ph-bold ph-database text-indigo-400", bg: "bg-indigo-950/50 border-indigo-500/30 text-indigo-200" },
+
+            // QA / Qualidade
+            "Cypress": { icon: "devicon-cypressio-plain colored", bg: "bg-teal-950/50 border-teal-500/30 text-teal-200" },
+            "Playwright": { icon: "devicon-playwright-plain colored", bg: "bg-amber-950/50 border-amber-500/30 text-amber-200" },
+            "Selenium": { icon: "devicon-selenium-original colored", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Postman": { icon: "devicon-postman-plain colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Cucumber": { icon: "devicon-cucumber-plain colored", bg: "bg-green-950/50 border-green-500/30 text-green-200" },
+            "JUnit/NUnit": { icon: "devicon-junit-plain colored", bg: "bg-red-950/50 border-red-500/30 text-red-200" },
+            "K6": { icon: "devicon-k6-original colored", bg: "bg-purple-950/50 border-purple-500/30 text-purple-200" },
+            "GitHub Actions": { icon: "devicon-githubactions-plain colored", bg: "bg-slate-800 border-slate-600 text-slate-200" },
+            "GitLab CI": { icon: "devicon-gitlab-plain colored", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "Appium": { ph: "ph-bold ph-device-mobile-camera text-purple-400", bg: "bg-purple-950/50 border-purple-500/30 text-purple-200" },
+            "RestAssured": { ph: "ph-bold ph-plugs-connected text-emerald-400", bg: "bg-emerald-950/50 border-emerald-500/30 text-emerald-200" },
+            "Robot Framework": { ph: "ph-bold ph-robot text-cyan-400", bg: "bg-cyan-950/50 border-cyan-500/30 text-cyan-200" },
+            "SoapUI": { ph: "ph-bold ph-Code text-amber-400", bg: "bg-amber-950/50 border-amber-500/30 text-amber-200" },
+            "Azure Test Plans": { icon: "devicon-azuredevops-plain colored", bg: "bg-blue-950/50 border-blue-500/30 text-blue-200" },
+            "Pact (Contract)": { ph: "ph-bold ph-handshake text-pink-400", bg: "bg-pink-950/50 border-pink-500/30 text-pink-200" },
+            "Karate DSL": { ph: "ph-bold ph-sword text-red-400", bg: "bg-red-950/50 border-red-500/30 text-red-200" },
+            "Gatling": { ph: "ph-bold ph-gauge text-orange-400", bg: "bg-orange-950/50 border-orange-500/30 text-orange-200" },
+            "JMeter": { ph: "ph-bold ph-flame text-rose-400", bg: "bg-rose-950/50 border-rose-500/30 text-rose-200" },
+            "SpecFlow (.NET)": { icon: "devicon-dotnetcore-plain colored", bg: "bg-purple-950/50 border-purple-500/30 text-purple-200" }
+        };
+
+        // =========================================================================
+        // 2. DADOS DAS 12 EMPRESAS (100% FIÉIS AO GUIA RÁPIDO VALIDADO)
+        // =========================================================================
+        const COMPANIES_DATA = [
+            {
+                id: "ciandt",
+                name: "1. CI&T",
+                subtitle: "Consultoria Global & GenAI",
+                badgeColor: "from-rose-500 to-orange-500",
+                segment: "global",
+                contractModel: "CLT + Operação Nearshore",
+                bonusInfo: "PLR + Projetos EUA/Europa",
+                salaryMultiplier: 1.05,
+                stacks: {
+                    frontend: ["React", "Angular", "TypeScript", "Next.js", "Flutter"],
+                    backend: ["Java (Spring)", ".NET Core", "Node.js", "Python", "Go"],
+                    fullstack: ["Java + Angular", ".NET + React", "AWS / GCP"],
+                    reqs: ["Jira", "Confluence", "BDD / Gherkin", "Scrum", "GenAI Flow"],
+                    data: ["Python (PySpark)", "Databricks", "BigQuery", "SQL", "Power BI"],
+                    qa: ["Cypress", "Playwright", "Postman", "Appium", "GitHub Actions"]
+                }
+            },
+            {
+                id: "stefanini",
+                name: "2. Stefanini",
+                subtitle: "Outsourcing / Bancos & Gov",
+                badgeColor: "from-blue-600 to-indigo-600",
+                segment: "finance",
+                contractModel: "CLT Tradicional / Alocação",
+                bonusInfo: "Benefícios Corporativos",
+                salaryMultiplier: 0.92,
+                stacks: {
+                    frontend: ["Angular", "React", "TypeScript", "Ionic", "Flutter"],
+                    backend: ["Java (JEE/Spring)", ".NET (C#)", "PHP", "Node.js"],
+                    fullstack: [".NET + Angular", "Java + Angular", "Node.js + React"],
+                    reqs: ["BPMN (Bizagi)", "UML", "APF (Pontos Função)", "Azure DevOps", "Jira"],
+                    data: ["SQL Server", "Oracle PL/SQL", "Power BI", "Qlik", "Azure Data Factory"],
+                    qa: ["Selenium", "Robot Framework", "Cypress", "SoapUI", "Azure Test Plans"]
+                }
+            },
+            {
+                id: "zup",
+                name: "3. Zup Innovation",
+                subtitle: "Tecnologia Bancária (Itaú)",
+                badgeColor: "from-orange-500 to-amber-500",
+                segment: "finance",
+                contractModel: "CLT + Pacote Itaú Unibanco",
+                bonusInfo: "PLR Bancária Alta + Benefícios",
+                salaryMultiplier: 1.12,
+                stacks: {
+                    frontend: ["React", "Angular", "TypeScript", "Kotlin", "Swift"],
+                    backend: ["Java (Spring Boot)", "Kotlin", "Go", "Kafka", "AWS"],
+                    fullstack: ["Java + React", "Kotlin + Angular", "Kubernetes"],
+                    reqs: ["Event Storming", "DDD", "OpenAPI (Swagger)", "Jira", "Product Discovery"],
+                    data: ["AWS Glue/Redshift", "PySpark", "SQL", "Quicksight", "Data Mesh"],
+                    qa: ["Pact (Contract)", "Karate DSL", "RestAssured", "Cypress", "Gatling"]
+                }
+            },
+            {
+                id: "brq",
+                name: "4. BRQ Digital",
+                subtitle: "Squads / Finanças & Telecom",
+                badgeColor: "from-cyan-500 to-blue-600",
+                segment: "finance",
+                contractModel: "CLT Tradicional (Squads)",
+                bonusInfo: "Plano de Carreira + Certificações",
+                salaryMultiplier: 0.96,
+                stacks: {
+                    frontend: ["Angular", "React", "Vue.js", "Swift", "React Native"],
+                    backend: ["Java (Spring)", ".NET (C#)", "Node.js", "Python", "Cobol"],
+                    fullstack: ["Java + Angular", ".NET + Angular", "Java + React"],
+                    reqs: ["SAFe", "Scrum", "BDD / Gherkin", "Figma", "BPMN"],
+                    data: ["SQL", "SAS", "Databricks", "Power BI", "Tableau"],
+                    qa: ["Selenium", "Cucumber", "Cypress", "Appium", "Postman"]
+                }
+            },
+            {
+                id: "compass",
+                name: "5. Compass UOL",
+                subtitle: "E-commerce, Cloud AWS & IA",
+                badgeColor: "from-amber-400 to-yellow-600",
+                segment: "global",
+                contractModel: "CLT / Nearshore Global",
+                bonusInfo: "Parceiro Premier AWS + Bolsas",
+                salaryMultiplier: 1.00,
+                stacks: {
+                    frontend: ["React", "Next.js", "Vue.js", "Angular", "React Native"],
+                    backend: ["Node.js (NestJS)", "Java (Spring)", "Python", "Go", ".NET"],
+                    fullstack: ["Node.js + Next.js", "Java + React", "AWS Serverless"],
+                    reqs: ["Product Discovery", "Jornada E-commerce", "Jira", "Confluence", "Scrum"],
+                    data: ["Snowflake", "AWS Glue/Redshift", "Databricks", "dbt", "Looker"],
+                    qa: ["Cypress", "Playwright", "Robot Framework", "K6", "GitLab CI"]
+                }
+            },
+            {
+                id: "softplan",
+                name: "6. Softplan",
+                subtitle: "Justiça Digital, Gov & Constr.",
+                badgeColor: "from-sky-500 to-blue-700",
+                segment: "product",
+                contractModel: "CLT (Produto & Governo)",
+                bonusInfo: "PPR + Benefícios Flexíveis",
+                salaryMultiplier: 0.98,
+                stacks: {
+                    frontend: ["React", "TypeScript", "Angular", "Design System"],
+                    backend: ["Java (Spring Boot)", "Python", "Node.js", "PHP", "Delphi"],
+                    fullstack: ["Java + React", "Node.js + React", "AWS"],
+                    reqs: ["Regras Legais/Gov", "BPMN", "UML", "Jira", "Confluence"],
+                    data: ["PostgreSQL", "Oracle", "Python", "Apache Airflow", "Power BI"],
+                    qa: ["Cypress", "Selenium", "RestAssured", "JMeter", "Postman"]
+                }
+            },
+            {
+                id: "db1",
+                name: "7. DB1 Group",
+                subtitle: "Fábrica Ágil & Produto",
+                badgeColor: "from-red-500 to-rose-600",
+                segment: "agile",
+                contractModel: "CLT + Projetos Nearshore",
+                bonusInfo: "Cultura Forte + PDI Estruturado",
+                salaryMultiplier: 0.97,
+                stacks: {
+                    frontend: ["React", "Angular", "TypeScript", "SASS", "Flutter"],
+                    backend: ["Java (Spring Boot)", ".NET Core", "Node.js", "Python"],
+                    fullstack: ["Java + React/Angular", ".NET + React", "AWS / Azure / GCP"],
+                    reqs: ["Lean Inception", "Story Mapping", "BPMN", "Scrum", "Jira"],
+                    data: ["SQL", "Python", "Azure Synapse", "MongoDB", "Power BI"],
+                    qa: ["Cypress", "Selenium", "Cucumber", "JUnit/NUnit", "Postman"]
+                }
+            },
+            {
+                id: "objective",
+                name: "8. Objective",
+                subtitle: "Consultoria XP / Agile",
+                badgeColor: "from-emerald-500 to-teal-600",
+                segment: "agile",
+                contractModel: "CLT Especializado (XP/Agile)",
+                bonusInfo: "Foco em Craftsmanship & TDD",
+                salaryMultiplier: 1.03,
+                stacks: {
+                    frontend: ["React", "Angular", "Vue.js", "TypeScript", "React Native"],
+                    backend: [".NET (C#)", "Java (Spring)", "Node.js", "Go", "Python"],
+                    fullstack: [".NET + React/Angular", "Java + React", "TDD / Clean Code"],
+                    reqs: ["BDD / Gherkin", "Product Discovery", "Story Mapping", "Domain Storytelling"],
+                    data: ["BigQuery", "Apache Airflow", "Python", "SQL", "Power BI"],
+                    qa: ["Playwright", "Cypress", "SpecFlow (.NET)", "RestAssured", "JUnit/NUnit"]
+                }
+            },
+            {
+                id: "gft",
+                name: "9. GFT Technologies",
+                subtitle: "Especialista Setor Financeiro",
+                badgeColor: "from-indigo-500 to-blue-800",
+                segment: "finance",
+                contractModel: "CLT + Clientes Globais",
+                bonusInfo: "Bônus Idiomas + Setor Bancário",
+                salaryMultiplier: 1.06,
+                stacks: {
+                    frontend: ["Angular", "React", "TypeScript", "Swift", "Kotlin"],
+                    backend: ["Java (Spring/Quarkus)", ".NET", "Python", "Kafka"],
+                    fullstack: ["Java + Angular", ".NET + Angular", "AWS / Azure / GCP"],
+                    reqs: ["Open Finance / PIX", "SAFe", "OpenAPI (Swagger)", "Jira", "Confluence"],
+                    data: ["Databricks", "Snowflake", "PySpark", "SAS", "Power BI"],
+                    qa: ["Karate DSL", "RestAssured", "Cypress", "Selenium", "JMeter"]
+                }
+            },
+            {
+                id: "luby",
+                name: "10. Luby Software",
+                subtitle: "Software Boutique / MVPs",
+                badgeColor: "from-purple-500 to-fuchsia-600",
+                segment: "agile",
+                contractModel: "CLT ou PJ Flexível",
+                bonusInfo: "Projetos Dinâmicos / Startups",
+                salaryMultiplier: 0.92,
+                stacks: {
+                    frontend: ["React", "Next.js", "Vue.js", "Flutter", "React Native"],
+                    backend: ["Node.js (NestJS)", ".NET", "PHP (Laravel)", "Python (FastAPI)"],
+                    fullstack: ["Node.js + Next.js", ".NET + React", "TypeScript"],
+                    reqs: ["Backlog / Whimsical", "Figma", "Scrum", "Azure DevOps"],
+                    data: ["PostgreSQL", "MySQL", "Python", "Metabase", "Power BI"],
+                    qa: ["Cypress", "Playwright", "Appium", "Postman", "K6"]
+                }
+            },
+            {
+                id: "bluesoft",
+                name: "11. Bluesoft",
+                subtitle: "Produto SaaS (ERP Varejo)",
+                badgeColor: "from-blue-400 to-cyan-500",
+                segment: "product",
+                contractModel: "CLT (Produto Próprio SaaS)",
+                bonusInfo: "100% Remoto + Pacote Benefícios",
+                salaryMultiplier: 0.99,
+                stacks: {
+                    frontend: ["React", "Angular", "TypeScript", "HTML5/CSS3", "Material UI"],
+                    backend: ["Java (8 a 21)", "Spring Boot", "Hibernate/JPA", "RabbitMQ", "AWS"],
+                    fullstack: ["Java + React", "Java + Angular", "AWS"],
+                    reqs: ["Fiscal (NF-e/SPED)", "ERP Varejo", "Scrum", "BDD / Gherkin"],
+                    data: ["Oracle", "PostgreSQL", "Data Warehouse", "Python", "Power BI"],
+                    qa: ["Selenium", "Cypress", "JUnit/NUnit", "Cucumber", "RestAssured"]
+                }
+            },
+            {
+                id: "bairesdev",
+                name: "12. BairesDev",
+                subtitle: "Nearshore Global (Clientes EUA)",
+                badgeColor: "from-orange-500 to-rose-600",
+                segment: "global",
+                contractModel: "PJ Internacional (USD / BRL)",
+                bonusInfo: "Pagamento em Dólar / Alta Liquidez",
+                isInternational: true,
+                salaryMultiplier: 1.85,
+                stacks: {
+                    frontend: ["React", "Angular", "Next.js", "Vue.js", "React Native"],
+                    backend: ["Python (Django/FastAPI)", "Node.js", "Java", ".NET", "Go"],
+                    fullstack: ["Node.js + React", "Python + React", "Java + Angular"],
+                    reqs: ["100% Inglês Fluente", "Jira", "Confluence", "Figma", "Scrum"],
+                    data: ["Snowflake", "Databricks", "PySpark", "BigQuery", "Tableau"],
+                    qa: ["Playwright", "Cypress", "Selenium", "Appium", "JMeter"]
+                }
+            }
+        ];
+
+        // =========================================================================
+        // 3. DADOS SALARIAIS BASE POR CARREIRA E SENIORIDADE (VALORES DISTINTOS!)
+        // =========================================================================
+        const CAREER_SALARIES = [
+            {
+                id: "frontend",
+                role: "Dev Frontend",
+                subtitle: "React, Angular, Vue, Next.js, Mobile",
+                icon: "ph-bold ph-Monitor text-cyan-400",
+                levels: {
+                    trainee: { min: 2600, max: 3400, avg: 3000 },
+                    junior:  { min: 3800, max: 5500, avg: 4650 },
+                    pleno:   { min: 6800, max: 9800, avg: 8300 },
+                    senior:  { min: 11500, max: 15500, avg: 13500 },
+                    lead:    { min: 16000, max: 21000, avg: 18500 }
+                }
+            },
+            {
+                id: "backend",
+                role: "Dev Backend",
+                subtitle: "Java, .NET, Node.js, Python, Go",
+                icon: "ph-bold ph-hard-drives text-indigo-400",
+                levels: {
+                    trainee: { min: 2800, max: 3600, avg: 3200 },
+                    junior:  { min: 4200, max: 6000, avg: 5100 },
+                    pleno:   { min: 7500, max: 10800, avg: 9150 },
+                    senior:  { min: 12500, max: 17000, avg: 14750 },
+                    lead:    { min: 17500, max: 23500, avg: 20500 }
+                }
+            },
+            {
+                id: "fullstack",
+                role: "Dev Fullstack",
+                subtitle: "Backend + Frontend + Arquitetura Cloud",
+                icon: "ph-bold ph-code-block text-purple-400",
+                levels: {
+                    trainee: { min: 2800, max: 3700, avg: 3250 },
+                    junior:  { min: 4300, max: 6200, avg: 5250 },
+                    pleno:   { min: 7800, max: 11200, avg: 9500 },
+                    senior:  { min: 13000, max: 17500, avg: 15250 },
+                    lead:    { min: 18000, max: 24000, avg: 21000 }
+                }
+            },
+            {
+                id: "reqs",
+                role: "Analista de Requisitos",
+                subtitle: "Business Analyst / Product Owner / GPM",
+                icon: "ph-bold ph-kanban text-amber-400",
+                levels: {
+                    trainee: { min: 2500, max: 3200, avg: 2850 },
+                    junior:  { min: 3600, max: 5000, avg: 4300 },
+                    pleno:   { min: 6200, max: 8800, avg: 7500 },
+                    senior:  { min: 9800, max: 13500, avg: 11650 },
+                    lead:    { min: 14000, max: 18500, avg: 16250 }
+                }
+            },
+            {
+                id: "data",
+                role: "Analista de Dados (BI)",
+                subtitle: "SQL, PySpark, Databricks, Power BI",
+                icon: "ph-bold ph-chart-polar text-emerald-400",
+                levels: {
+                    trainee: { min: 2700, max: 3500, avg: 3100 },
+                    junior:  { min: 3800, max: 5500, avg: 4650 },
+                    pleno:   { min: 6800, max: 9800, avg: 8300 },
+                    senior:  { min: 11000, max: 15000, avg: 13000 },
+                    lead:    { min: 15500, max: 20500, avg: 18000 }
+                }
+            },
+            {
+                id: "qa",
+                role: "Analista de Qualidade (QA)",
+                subtitle: "Automação Cypress, Playwright, SDET",
+                icon: "ph-bold ph-shield-check text-rose-400",
+                levels: {
+                    trainee: { min: 2500, max: 3200, avg: 2850 },
+                    junior:  { min: 3400, max: 4800, avg: 4100 },
+                    pleno:   { min: 6000, max: 8800, avg: 7400 },
+                    senior:  { min: 10000, max: 14200, avg: 12100 },
+                    lead:    { min: 14500, max: 19000, avg: 16750 }
+                }
+            }
+        ];
+
+        // Estado atual de visualização e filtros
+        let currentContractMode = 'clt'; // 'clt' (1.0), 'nearshore' (1.3), 'pj' (1.4)
+        let activeHighlightTerm = '';
+
+        // =========================================================================
+        // 4. FUNÇÕES DE RENDERIZAÇÃO DO INFOGRÁFICO 1 (MATRIZ DE STACKS)
+        // =========================================================================
+        function createTechBadge(techName) {
+            const spec = TECH_LOGOS[techName] || {
+                ph: "ph-bold ph-code text-slate-300",
+                bg: "bg-slate-800 border-slate-700 text-slate-200"
+            };
+
+            let iconHtml = '';
+            if (spec.icon && spec.icon2) {
+                iconHtml = `<i class="${spec.icon} text-sm"></i><span class="text-[9px] text-slate-400">+</span><i class="${spec.icon2} text-sm"></i>`;
+            } else if (spec.icon) {
+                iconHtml = `<i class="${spec.icon} text-sm"></i>`;
+            } else if (spec.ph) {
+                iconHtml = `<i class="${spec.ph} text-sm"></i>`;
+            }
+
+            // Verifica se está filtrado/destacado
+            let highlightClass = '';
+            if (activeHighlightTerm) {
+                const match = techName.toLowerCase().includes(activeHighlightTerm.toLowerCase());
+                highlightClass = match ? 'highlighted' : 'dimmed';
+            }
+
+            return `
+                <span onclick="quickHighlight('${techName.replace(/'/g, "\\'")}')" 
+                      title="Clique para destacar ${techName} em todas as empresas"
+                      class="tech-badge cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold tracking-tight ${spec.bg} ${highlightClass}">
+                    ${iconHtml}
+                    <span>${techName}</span>
+                </span>
+            `;
+        }
+
+        function renderStackMatrix() {
+            const tbody = document.getElementById('stack-matrix-body');
+            const segmentFilter = document.getElementById('company-segment-filter').value;
+
+            const filteredCompanies = COMPANIES_DATA.filter(c => {
+                if (segmentFilter === 'all') return true;
+                return c.segment === segmentFilter;
+            });
+
+            tbody.innerHTML = filteredCompanies.map(comp => `
+                <tr class="matrix-row group">
+                    <!-- Coluna Empresa -->
+                    <td class="matrix-cell py-4 px-4 sticky left-0 z-10 bg-slate-900/95 group-hover:bg-slate-850 border-r border-slate-800 align-top">
+                        <div class="flex items-start gap-2.5">
+                            <div class="w-2 h-10 rounded-full bg-gradient-to-b ${comp.badgeColor} shrink-0 mt-0.5"></div>
+                            <div>
+                                <div class="font-extrabold text-sm text-white leading-tight">${comp.name}</div>
+                                <div class="text-[11px] text-slate-400 font-medium mt-0.5">${comp.subtitle}</div>
+                                <span class="inline-block mt-1.5 px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 border border-slate-700">
+                                    ${comp.contractModel}
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Dev Frontend -->
+                    <td class="matrix-cell py-3.5 px-3 border-r border-slate-800/60 align-top">
+                        <div class="flex flex-wrap gap-1.5">
+                            ${comp.stacks.frontend.map(createTechBadge).join('')}
+                        </div>
+                    </td>
+
+                    <!-- Dev Backend -->
+                    <td class="matrix-cell py-3.5 px-3 border-r border-slate-800/60 align-top">
+                        <div class="flex flex-wrap gap-1.5">
+                            ${comp.stacks.backend.map(createTechBadge).join('')}
+                        </div>
+                    </td>
+
+                    <!-- Dev Fullstack -->
+                    <td class="matrix-cell py-3.5 px-3 border-r border-slate-800/60 align-top">
+                        <div class="flex flex-wrap gap-1.5">
+                            ${comp.stacks.fullstack.map(createTechBadge).join('')}
+                        </div>
+                    </td>
+
+                    <!-- Analista de Requisitos -->
+                    <td class="matrix-cell py-3.5 px-3 border-r border-slate-800/60 align-top">
+                        <div class="flex flex-wrap gap-1.5">
+                            ${comp.stacks.reqs.map(createTechBadge).join('')}
+                        </div>
+                    </td>
+
+                    <!-- Analista de Dados -->
+                    <td class="matrix-cell py-3.5 px-3 border-r border-slate-800/60 align-top">
+                        <div class="flex flex-wrap gap-1.5">
+                            ${comp.stacks.data.map(createTechBadge).join('')}
+                        </div>
+                    </td>
+
+                    <!-- Analista de QA -->
+                    <td class="matrix-cell py-3.5 px-3 align-top">
+                        <div class="flex flex-wrap gap-1.5">
+                            ${comp.stacks.qa.map(createTechBadge).join('')}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterStacks() {
+            const input = document.getElementById('stack-search');
+            activeHighlightTerm = input.value.trim();
+            
+            const clearBtn = document.getElementById('clear-search-btn');
+            const resetPill = document.getElementById('reset-highlight-pill');
+            
+            if (activeHighlightTerm.length > 0) {
+                clearBtn.classList.remove('hidden');
+                resetPill.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+                resetPill.classList.add('hidden');
+            }
+            renderStackMatrix();
+        }
+
+        function quickHighlight(term) {
+            const input = document.getElementById('stack-search');
+            if (activeHighlightTerm.toLowerCase() === term.toLowerCase()) {
+                clearStackSearch();
+            } else {
+                input.value = term;
+                filterStacks();
+            }
+        }
+
+        function clearStackSearch() {
+            const input = document.getElementById('stack-search');
+            input.value = '';
+            activeHighlightTerm = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            document.getElementById('reset-highlight-pill').classList.add('hidden');
+            renderStackMatrix();
+        }
+
+        // =========================================================================
+        // 5. FUNÇÕES DE RENDERIZAÇÃO DO INFOGRÁFICO 2 (MATRIZES SALARIAIS)
+        // =========================================================================
+        function formatBRL(val) {
+            const rounded = Math.round(val / 50) * 50;
+            return rounded.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+        }
+
+        function formatCompactK(val) {
+            const k = (val / 1000).toFixed(1).replace('.0', '');
+            return `R$ ${k}k`;
+        }
+
+        function setContractMode(mode) {
+            currentContractMode = mode;
+            const modes = ['clt', 'nearshore', 'pj'];
+            modes.forEach(m => {
+                const btn = document.getElementById(`mode-${m}`);
+                if (m === mode) {
+                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-600 text-white shadow";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white";
+                }
+            });
+
+            const badge = document.getElementById('contract-badge-label');
+            if (mode === 'clt') {
+                badge.textContent = "Regime CLT Mensal Bruto (1.0x)";
+                badge.className = "px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else if (mode === 'nearshore') {
+                badge.textContent = "CLT Nearshore / Inglês Fluente (+30%)";
+                badge.className = "px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30";
+            } else {
+                badge.textContent = "Contrato PJ Nacional (+40%)";
+                badge.className = "px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30";
+            }
+
+            renderCareerSalaryMatrix();
+        }
+
+        function renderCareerSalaryMatrix() {
+            const tbody = document.getElementById('career-salary-body');
+            const mult = currentContractMode === 'clt' ? 1.0 : (currentContractMode === 'nearshore' ? 1.30 : 1.40);
+
+            tbody.innerHTML = CAREER_SALARIES.map(item => {
+                const renderCell = (lvl, colorClass, borderClass, barColor) => {
+                    const minVal = lvl.min * mult;
+                    const maxVal = lvl.max * mult;
+                    const avgVal = lvl.avg * mult;
+                    // Calcula largura proporcional para barra visual (máx R$ 35k)
+                    const pct = Math.min(100, Math.round((avgVal / 30000) * 100));
+
+                    return `
+                        <td class="py-4 px-4 border-r border-slate-800/70 align-middle">
+                            <div class="p-2.5 rounded-xl bg-slate-950/90 border ${borderClass} shadow-inner">
+                                <div class="flex items-baseline justify-between gap-1">
+                                    <span class="text-[11px] text-slate-400 font-medium">Média:</span>
+                                    <span class="font-mono font-extrabold text-sm ${colorClass}">${formatBRL(avgVal)}</span>
+                                </div>
+                                <div class="text-[11px] font-mono text-slate-300 mt-1 flex items-center justify-between">
+                                    <span class="text-slate-500">Faixa:</span>
+                                    <span>${formatBRL(minVal)} – ${formatBRL(maxVal)}</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-slate-800 rounded-full mt-2 overflow-hidden">
+                                    <div class="h-full ${barColor} rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                    `;
+                };
+
+                return `
+                    <tr class="matrix-row">
+                        <td class="py-4 px-5 border-r border-slate-800 bg-slate-900/90">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0">
+                                    <i class="${item.icon} text-lg"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm text-white">${item.role}</div>
+                                    <div class="text-[11px] text-slate-400">${item.subtitle}</div>
+                                </div>
+                            </div>
+                        </td>
+                        ${renderCell(item.levels.trainee, 'text-cyan-300', 'border-cyan-500/25', 'bg-cyan-500')}
+                        ${renderCell(item.levels.junior,  'text-blue-300', 'border-blue-500/25', 'bg-blue-500')}
+                        ${renderCell(item.levels.pleno,   'text-purple-300', 'border-purple-500/25', 'bg-purple-500')}
+                        ${renderCell(item.levels.senior,  'text-pink-300', 'border-pink-500/25', 'bg-pink-500')}
+                        ${renderCell(item.levels.lead,    'text-amber-300', 'border-amber-500/30', 'bg-amber-500')}
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderCompanySalaryMatrix() {
+            const roleId = document.getElementById('company-salary-role-select').value;
+            const roleData = CAREER_SALARIES.find(r => r.id === roleId) || CAREER_SALARIES[2];
+            const tbody = document.getElementById('company-salary-body');
+
+            tbody.innerHTML = COMPANIES_DATA.map(comp => {
+                const m = comp.salaryMultiplier;
+
+                if (comp.isInternational) {
+                    // BairesDev (Contractor USD/BRL)
+                    const jrVal = roleData.levels.junior.avg * m;
+                    const plVal = roleData.levels.pleno.avg * m;
+                    const srVal = roleData.levels.senior.avg * m;
+                    const ldVal = roleData.levels.lead.avg * m;
+
+                    return `
+                        <tr class="bg-gradient-to-r from-orange-950/20 via-rose-950/15 to-slate-900 hover:from-orange-950/30">
+                            <td class="py-3.5 px-4 border-r border-slate-800 font-bold text-white">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-6 rounded-full bg-gradient-to-b ${comp.badgeColor}"></span>
+                                    <div>
+                                        <div>${comp.name}</div>
+                                        <span class="text-[10px] text-orange-300 font-semibold uppercase">Contractor Internacional</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3.5 px-4 border-r border-slate-800">
+                                <div class="text-xs font-semibold text-amber-300">${comp.contractModel}</div>
+                                <div class="text-[10px] text-slate-400">${comp.bonusInfo}</div>
+                            </td>
+                            <td class="py-3.5 px-4 border-r border-slate-800/70 text-slate-500 italic text-[11px]">
+                                Foco a partir de Jr/Pleno
+                            </td>
+                            <td class="py-3.5 px-4 border-r border-slate-800/70 font-mono">
+                                <span class="px-2.5 py-1 rounded-lg bg-blue-950/70 border border-blue-500/40 text-blue-200 font-bold">
+                                    ${formatBRL(jrVal)}
+                                </span>
+                                <div class="text-[10px] text-slate-400 mt-1">~US$ 1.6k – 2.1k</div>
+                            </td>
+                            <td class="py-3.5 px-4 border-r border-slate-800/70 font-mono">
+                                <span class="px-2.5 py-1 rounded-lg bg-purple-950/70 border border-purple-500/40 text-purple-200 font-bold">
+                                    ${formatBRL(plVal)}
+                                </span>
+                                <div class="text-[10px] text-slate-400 mt-1">~US$ 2.8k – 3.8k</div>
+                            </td>
+                            <td class="py-3.5 px-4 border-r border-slate-800/70 font-mono">
+                                <span class="px-2.5 py-1 rounded-lg bg-pink-950/70 border border-pink-500/40 text-pink-200 font-bold">
+                                    ${formatBRL(srVal)}
+                                </span>
+                                <div class="text-[10px] text-slate-400 mt-1">~US$ 4.5k – 6.0k</div>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono">
+                                <span class="px-2.5 py-1 rounded-lg bg-amber-950/80 border border-amber-500/50 text-amber-200 font-extrabold">
+                                    ${formatBRL(ldVal)}+
+                                </span>
+                                <div class="text-[10px] text-amber-400/80 mt-1">~US$ 6.2k – 7.8k+</div>
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                // Empresas Nacionais (CLT / Produto / Consultoria)
+                const trMin = roleData.levels.trainee.min * m;
+                const trMax = roleData.levels.trainee.max * m;
+                const jrMin = roleData.levels.junior.min * m;
+                const jrMax = roleData.levels.junior.max * m;
+                const plMin = roleData.levels.pleno.min * m;
+                const plMax = roleData.levels.pleno.max * m;
+                const srMin = roleData.levels.senior.min * m;
+                const srMax = roleData.levels.senior.max * m;
+                const ldMin = roleData.levels.lead.min * m;
+                const ldMax = roleData.levels.lead.max * m;
+
+                return `
+                    <tr class="matrix-row">
+                        <td class="matrix-cell py-3.5 px-4 border-r border-slate-800 font-bold text-white">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-6 rounded-full bg-gradient-to-b ${comp.badgeColor}"></span>
+                                <div>
+                                    <div>${comp.name}</div>
+                                    <div class="text-[10px] text-slate-400 font-normal">${comp.subtitle}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="matrix-cell py-3.5 px-4 border-r border-slate-800">
+                            <div class="text-xs font-semibold text-slate-200">${comp.contractModel}</div>
+                            <div class="text-[10px] text-slate-400">${comp.bonusInfo}</div>
+                        </td>
+                        <td class="matrix-cell py-3.5 px-4 border-r border-slate-800/70 font-mono text-cyan-300 font-semibold">
+                            ${formatCompactK(trMin)} – ${formatCompactK(trMax)}
+                            <div class="text-[10px] text-slate-400 font-normal">Média: ${formatBRL((trMin+trMax)/2)}</div>
+                        </td>
+                        <td class="matrix-cell py-3.5 px-4 border-r border-slate-800/70 font-mono text-blue-300 font-semibold">
+                            ${formatCompactK(jrMin)} – ${formatCompactK(jrMax)}
+                            <div class="text-[10px] text-slate-400 font-normal">Média: ${formatBRL((jrMin+jrMax)/2)}</div>
+                        </td>
+                        <td class="matrix-cell py-3.5 px-4 border-r border-slate-800/70 font-mono text-purple-300 font-semibold">
+                            ${formatCompactK(plMin)} – ${formatCompactK(plMax)}
+                            <div class="text-[10px] text-slate-400 font-normal">Média: ${formatBRL((plMin+plMax)/2)}</div>
+                        </td>
+                        <td class="matrix-cell py-3.5 px-4 border-r border-slate-800/70 font-mono text-pink-300 font-semibold">
+                            ${formatCompactK(srMin)} – ${formatCompactK(srMax)}
+                            <div class="text-[10px] text-slate-400 font-normal">Média: ${formatBRL((srMin+srMax)/2)}</div>
+                        </td>
+                        <td class="matrix-cell py-3.5 px-4 font-mono text-amber-300 font-bold">
+                            ${formatCompactK(ldMin)} – ${formatCompactK(ldMax)}
+                            <div class="text-[10px] text-slate-400 font-normal">Média: ${formatBRL((ldMin+ldMax)/2)}</div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // =========================================================================
+        // 6. CONTROLE DE ABAS DE VISUALIZAÇÃO
+        // =========================================================================
+        function switchView(view) {
+            const secStacks = document.getElementById('section-stacks');
+            const secSalaries = document.getElementById('section-salaries');
+            const tabStacks = document.getElementById('tab-stacks');
+            const tabSalaries = document.getElementById('tab-salaries');
+            const tabBoth = document.getElementById('tab-both');
+
+            const activeClass = "flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md";
+            const inactiveClass = "flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/60";
+
+            if (view === 'stacks') {
+                secStacks.classList.remove('hidden');
+                secSalaries.classList.add('hidden');
+                tabStacks.className = activeClass;
+                tabSalaries.className = inactiveClass;
+                tabBoth.className = inactiveClass;
+            } else if (view === 'salaries') {
+                secStacks.classList.add('hidden');
+                secSalaries.classList.remove('hidden');
+                tabStacks.className = inactiveClass;
+                tabSalaries.className = activeClass;
+                tabBoth.className = inactiveClass;
+            } else {
+                secStacks.classList.remove('hidden');
+                secSalaries.classList.remove('hidden');
+                tabStacks.className = inactiveClass;
+                tabSalaries.className = inactiveClass;
+                tabBoth.className = activeClass;
+            }
+        }
+
+        // Inicializar o aplicativo mostrando ambos os infográficos
+        window.onload = function() {
+            renderStackMatrix();
+            renderCareerSalaryMatrix();
+            renderCompanySalaryMatrix();
+            switchView('both');
+        };
+    </script>
+</body>
+</html>
